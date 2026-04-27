@@ -1,0 +1,37 @@
+# Godot 4 imports/cache
+.godot/
+.import/
+export.cfg
+export_presets.cfg
+
+# Exported builds
+builds/
+exports/
+*.exe
+*.x86_64
+*.x86_32
+*.app
+*.apk
+*.aab
+*.pck
+*.zip
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs/temp
+*.log
+tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+*~
