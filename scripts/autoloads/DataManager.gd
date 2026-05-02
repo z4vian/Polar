@@ -49,7 +49,17 @@ func load_level_data():
 func load_game() -> void:
 	print("loading...")
 	load_file_data()
-	_load_game_data()
+	if !get_file_data().game_data:
+		game_loaded.emit()
+		return
+	var saved_level: String = get_file_data().game_data.level
+	var current_level = Globals.get_current_level()
+	if current_level and current_level.scene_file_path == saved_level:
+		# Same level: apply saved state directly to the nodes already in the scene.
+		load_level_data()
+	elif saved_level:
+		# Different level: switch scenes; the new level calls load_level_data via init_scene().
+		Globals.load_last_saved_level()
 	game_loaded.emit()
 
 func save_game() -> void:
@@ -59,13 +69,6 @@ func save_game() -> void:
 	get_file_data().write_save_file()
 	game_saved.emit()
 
-func _load_game_data():
-	if !get_file_data().game_data:
-		return
-	var current_level = Globals.get_current_level()
-	if current_level and get_file_data().game_data.level != current_level.scene_file_path or !current_level:
-		Globals.load_last_saved_level()
-
 func _load_nodes_data():
 	for node: Node in _get_save_nodes():
 		if node is not PlayerEntity:
@@ -74,6 +77,24 @@ func _load_nodes_data():
 				node_data = node.call(GET_DATA_METHOD)
 			if node.has_method(RECEIVE_DATA_METHOD):
 				node.call(RECEIVE_DATA_METHOD, node_data)
+
+	# PlayerInstantiator defers player spawn, so the player may not exist yet.
+	# If present, apply saved data now. If not, wait for the spawn signal.
+	var players := Globals.get_players()
+	if players.size() > 0:
+		_apply_player_data(players[0] as PlayerEntity)
+	else:
+		Globals.player_added_to_scene.connect(_on_player_added_for_restore, CONNECT_ONE_SHOT)
+
+func _apply_player_data(player: PlayerEntity) -> void:
+	if not player:
+		return
+	var player_data = get_player_data(player.player_id)
+	if player_data and player.has_method(RECEIVE_DATA_METHOD):
+		player.call(RECEIVE_DATA_METHOD, player_data)
+
+func _on_player_added_for_restore(player: PlayerEntity) -> void:
+	_apply_player_data(player)
 
 func _save_nodes_data():
 	for node: Node in _get_save_nodes():
