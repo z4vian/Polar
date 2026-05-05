@@ -1,4 +1,4 @@
-[gd_scene load_steps=95 format=4 uid="uid://stlloemylyy0"]
+[gd_scene load_steps=98 format=4 uid="uid://stlloemylyy0"]
 
 [ext_resource type="PackedScene" uid="uid://b0b0jp36dubff" path="res://scenes/levels/Level.tscn" id="1_1jysu"]
 [ext_resource type="PackedScene" uid="uid://r3iqi7bb4jyw" path="res://scenes/props/potion.tscn" id="2_h8st3"]
@@ -29,6 +29,8 @@
 [ext_resource type="Script" uid="uid://qa3ikcf8scy7" path="res://scripts/state_machine/states/state_face.gd" id="18_nowak"]
 [ext_resource type="Script" uid="uid://c6r5xohr5314y" path="res://components/target_manager.gd" id="27_dln11"]
 [ext_resource type="Script" uid="uid://qawe0cujhuns" path="res://scripts/Direction.gd" id="29_dddes"]
+[ext_resource type="PackedScene" uid="uid://cqw82ociq0p1m" path="res://scenes/props/item.tscn" id="30_item"]
+[ext_resource type="Resource" uid="uid://bwwneuh3ges0r" path="res://items/weapons/sword_1.tres" id="31_sword"]
 
 [sub_resource type="Resource" id="Resource_iu1m7"]
 script = ExtResource("4_dln11")
@@ -553,6 +555,12 @@ point_count = 4
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 1120, -360, 0, 0, 0, 0, 1120, -272)
 }
+
+[sub_resource type="Resource" id="Resource_sword_content"]
+script = ExtResource("4_dln11")
+item = ExtResource("31_sword")
+quantity = 1
+metadata/_custom_type_script = ExtResource("4_dln11")
 point_count = 2
 
 [node name="Playground_02" instance=ExtResource("1_1jysu")]
@@ -854,7 +862,113 @@ on_enter = Dictionary[String, Variant]({
 "input_enabled": true
 })
 
+[node name="Enemy2" parent="Entities" index="3" instance=ExtResource("13_wnv1r")]
+position = Vector2(96, 160)
+
+[node name="Enemy3" parent="Entities" index="4" instance=ExtResource("13_wnv1r")]
+position = Vector2(160, 256)
+
+[node name="Enemy4" parent="Entities" index="5" instance=ExtResource("13_wnv1r")]
+position = Vector2(208, 416)
+
+[node name="Enemy5" parent="Entities" index="6" instance=ExtResource("13_wnv1r")]
+position = Vector2(112, 464)
+
+[node name="Enemy6" parent="Entities" index="7" instance=ExtResource("13_wnv1r")]
+position = Vector2(-48, 384)
+
+[node name="Enemy7" parent="Entities" index="8" instance=ExtResource("13_wnv1r")]
+position = Vector2(-48, 448)
+
+[node name="Enemy8" parent="Entities" index="9" instance=ExtResource("13_wnv1r")]
+position = Vector2(-64, 496)
+
+[node name="Enemy9" parent="Entities" index="10" instance=ExtResource("13_wnv1r")]
+position = Vector2(432, 256)
+
+[node name="Enemy10" parent="Entities" index="11" instance=ExtResource("13_wnv1r")]
+position = Vector2(672, 96)
+
+[node name="Enemy11" parent="Entities" index="12" instance=ExtResource("13_wnv1r")]
+position = Vector2(736, 176)
+
+[node name="Enemy12" parent="Entities" index="13" instance=ExtResource("13_wnv1r")]
+position = Vector2(768, 96)
+
+[node name="Enemy13" parent="Entities" index="14" instance=ExtResource("13_wnv1r")]
+position = Vector2(960, 128)
+
+[node name="Enemy14" parent="Entities" index="15" instance=ExtResource("13_wnv1r")]
+position = Vector2(1056, 240)
+
+[node name="Enemy15" parent="Entities" index="16" instance=ExtResource("13_wnv1r")]
+position = Vector2(1120, 192)
+
+[node name="Enemy16" parent="Entities" index="17" instance=ExtResource("13_wnv1r")]
+position = Vector2(1184, 160)
+
+[node name="Enemy17" parent="Entities" index="18" instance=ExtResource("13_wnv1r")]
+position = Vector2(480, 192)
+
+[node name="Boss" parent="Entities" index="19" instance=ExtResource("13_wnv1r")]
+position = Vector2(1296, 96)
+scale = Vector2(2, 2)
+
+[node name="HealthController" parent="Entities/Boss" index="9" node_paths=PackedStringArray("on_hp_0")]
+max_hp = 50
+recovery_time = 0.4
+on_hp_0 = NodePath("../EnemyStates/death")
+
+[node name="EnemyAI" parent="Entities/Boss" index="11"]
+aggro_range = 220.0
+attack_range = 64.0
+attack_damage = 3
+attack_interval = 1.2
+
+[node name="SwordItem1" parent="Props" index="3" instance=ExtResource("30_item")]
+position = Vector2(-112, 448)
+contents = [SubResource("Resource_sword_content")]
+
+[node name="SwordItem2" parent="Props" index="4" instance=ExtResource("30_item")]
+position = Vector2(144, 368)
+contents = [SubResource("Resource_sword_content")]
+
+[node name="SwordItem3" parent="Props" index="5" instance=ExtResource("30_item")]
+position = Vector2(720, 96)
+contents = [SubResource("Resource_sword_content")]
+
+[node name="SwordItem4" parent="Props" index="6" instance=ExtResource("30_item")]
+position = Vector2(1040, 336)
+contents = [SubResource("Resource_sword_content")]
+
+[node name="SwordItem5" parent="Props" index="7" instance=ExtResource("30_item")]
+position = Vector2(1184, 336)
+contents = [SubResource("Resource_sword_content")]
+
 [editable path="Props/Potion"]
 [editable path="Props/Chest"]
 [editable path="Props/Door"]
 [editable path="Entities/NPC"]
+
+[editable path="Entities/Enemy2"]
+[editable path="Entities/Enemy3"]
+[editable path="Entities/Enemy4"]
+[editable path="Entities/Enemy5"]
+[editable path="Entities/Enemy6"]
+[editable path="Entities/Enemy7"]
+[editable path="Entities/Enemy8"]
+[editable path="Entities/Enemy9"]
+[editable path="Entities/Enemy10"]
+[editable path="Entities/Enemy11"]
+[editable path="Entities/Enemy12"]
+[editable path="Entities/Enemy13"]
+[editable path="Entities/Enemy14"]
+[editable path="Entities/Enemy15"]
+[editable path="Entities/Enemy16"]
+[editable path="Entities/Enemy17"]
+[editable path="Entities/Boss"]
+[editable path="Props/SwordItem1"]
+[editable path="Props/SwordItem2"]
+[editable path="Props/SwordItem3"]
+[editable path="Props/SwordItem4"]
+[editable path="Props/SwordItem5"]
