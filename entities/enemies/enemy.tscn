@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://2c84y1k62jlc"]
+[gd_scene load_steps=66 format=3 uid="uid://2c84y1k62jlc"]
 
 [ext_resource type="PackedScene" uid="uid://d2nwo602rnihe" path="res://entities/entity.tscn" id="1_ftgfs"]
 [ext_resource type="Shader" uid="uid://blugt5j7e8tag" path="res://shaders/flash.gdshader" id="2_fvxof"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://igey4j36or78" path="res://components/health_controller.gd" id="5_ipr6v"]
 [ext_resource type="Script" uid="uid://dp66ice2hhj8n" path="res://scripts/state_machine/state_machine.gd" id="6_gj3y3"]
 [ext_resource type="Script" uid="uid://dd2m5xedjwd4m" path="res://scripts/state_machine/states/state_callable.gd" id="7_56i32"]
+[ext_resource type="Script" path="res://entities/enemies/enemy_ai.gd" id="8_eai"]
 
 [sub_resource type="Resource" id="Resource_56i32"]
 script = ExtResource("2_gj3y3")
@@ -538,3 +539,10 @@ node = NodePath("../..")
 method_name = "queue_free"
 send_statemachine_params = false
 metadata/_custom_type_script = "uid://dd2m5xedjwd4m"
+
+[node name="EnemyAI" type="Node" parent="." index="11"]
+script = ExtResource("8_eai")
+aggro_range = 150.0
+attack_range = 40.0
+attack_damage = 1
+attack_interval = 1.5

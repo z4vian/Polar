@@ -52,11 +52,26 @@ func _process(_delta: float) -> void:
 func _init_target():
 	if Engine.is_editor_hint():
 		return
-	await get_tree().physics_frame
+	# Connect BEFORE awaiting: PlayerInstantiator emits player_added_to_scene
+	# inside its own call_deferred batch, which runs before the physics frame.
+	# Connecting after the await would miss the signal entirely.
 	if target_player_id > 0:
-		target = Globals.get_player(target_player_id)
+		if not Globals.player_added_to_scene.is_connected(_on_player_added_to_scene):
+			Globals.player_added_to_scene.connect(_on_player_added_to_scene, CONNECT_ONE_SHOT)
+	await get_tree().physics_frame
+	if target_player_id > 0 and not is_instance_valid(target):
+		# Player may already be in the scene if it spawned very quickly.
+		var found = Globals.get_player(target_player_id)
+		if found:
+			if Globals.player_added_to_scene.is_connected(_on_player_added_to_scene):
+				Globals.player_added_to_scene.disconnect(_on_player_added_to_scene)
+			target = found
 	elif target:
 		target = target
+
+func _on_player_added_to_scene(player: PlayerEntity) -> void:
+	if player.player_id == target_player_id:
+		target = player
 
 ## Checks if the node has reached the target position.
 func _is_target_reached():
