@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="DataWeapon" format=3]
+
+[ext_resource type="Script" uid="uid://bc7pmqpgxatnh" path="res://items/weapons/data_weapon.gd" id="1_weapon"]
+[ext_resource type="PackedScene" path="res://items/weapons/projectile.tscn" id="2_projectile"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_icon"]
+load_path = "res://.godot/imported/swords.png-9a34721c76f110b2a6f898235b34fe09.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_icon"]
+atlas = SubResource("CompressedTexture2D_icon")
+region = Rect2(0, 0, 32, 32)
+
+[resource]
+resource_name = "deagle"
+script = ExtResource("1_weapon")
+icon = SubResource("AtlasTexture_icon")
+power = 4
+speed = 0.45
+projectile_scene = ExtResource("2_projectile")
+rate_of_fire = 2.2
+projectile_speed = 900.0
+projectile_range = 560.0
+pellet_count = 1
+spread_degrees = 0.0
+use_melee_hitbox = false

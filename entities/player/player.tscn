@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://d2nwo602rnihe" path="res://entities/entity.tscn" id="1_fnaeb"]
 [ext_resource type="PackedScene" uid="uid://ry5d5tfsku2i" path="res://scenes/hud/player_hud.tscn" id="2_kl4cw"]
 [ext_resource type="Script" uid="uid://ngyk1y3ddxjb" path="res://entities/player/player_entity.gd" id="2_x37y0"]
-[ext_resource type="Resource" uid="uid://bwwneuh3ges0r" path="res://items/weapons/sword_1.tres" id="3_3wlsy"]
+[ext_resource type="Resource" path="res://items/weapons/deagle.tres" id="3_3wlsy"]
 [ext_resource type="Script" uid="uid://dp66ice2hhj8n" path="res://scripts/state_machine/state_machine.gd" id="3_xnu42"]
 [ext_resource type="Script" uid="uid://qawe0cujhuns" path="res://scripts/Direction.gd" id="3_yqrof"]
 [ext_resource type="Shader" uid="uid://blugt5j7e8tag" path="res://shaders/flash.gdshader" id="4_8hp4k"]
@@ -486,7 +486,40 @@ action = "jump"
 function_name = "jump"
 metadata/_custom_type_script = "uid://dlqmc36quropm"
 
-[node name="Player" unique_id=445539203 node_paths=PackedStringArray("on_transfer_start", "on_transfer_end", "health_controller", "inventory", "running_particles", "on_attack", "on_fall") groups=["player", "save"] instance=ExtResource("1_fnaeb")]
+[sub_resource type="Resource" id="Resource_roll"]
+script = ExtResource("12_b2kln")
+action = "roll"
+function_name = "roll"
+metadata/_custom_type_script = "uid://dlqmc36quropm"
+
+[sub_resource type="Resource" id="Resource_grenade"]
+script = ExtResource("12_b2kln")
+action = "grenade"
+function_name = "throw_grenade"
+metadata/_custom_type_script = "uid://dlqmc36quropm"
+
+[sub_resource type="Resource" id="Resource_slot_1"]
+script = ExtResource("12_b2kln")
+action = "weapon_slot_1"
+function_name = "equip_loadout_slot"
+function_args = [0]
+metadata/_custom_type_script = "uid://dlqmc36quropm"
+
+[sub_resource type="Resource" id="Resource_slot_2"]
+script = ExtResource("12_b2kln")
+action = "weapon_slot_2"
+function_name = "equip_loadout_slot"
+function_args = [1]
+metadata/_custom_type_script = "uid://dlqmc36quropm"
+
+[sub_resource type="Resource" id="Resource_slot_3"]
+script = ExtResource("12_b2kln")
+action = "weapon_slot_3"
+function_name = "equip_loadout_slot"
+function_args = [2]
+metadata/_custom_type_script = "uid://dlqmc36quropm"
+
+[node name="Player" unique_id=445539203 node_paths=PackedStringArray("on_transfer_start", "on_transfer_end", "health_controller", "inventory", "running_particles", "on_attack", "on_roll", "on_fall") groups=["player", "save"] instance=ExtResource("1_fnaeb")]
 y_sort_enabled = false
 script = ExtResource("2_x37y0")
 on_transfer_start = NodePath("StateMachine/auto")
@@ -497,6 +530,7 @@ weapon = ExtResource("3_3wlsy")
 initial_facing = SubResource("Resource_3wlsy")
 running_particles = NodePath("SmokeParticles")
 on_attack = NodePath("StateMachine/attack")
+on_roll = NodePath("StateMachine/roll")
 on_fall = NodePath("StateMachine/fall")
 
 [node name="SmokeParticles" parent="." index="2" unique_id=1354660529 instance=ExtResource("6_dxaj8")]
@@ -538,7 +572,7 @@ script = ExtResource("11_we0b7")
 [node name="input_actions" type="Node" parent="StateMachine/move" index="0" unique_id=1239390229 node_paths=PackedStringArray("node_ref")]
 script = ExtResource("4_b1v48")
 node_ref = NodePath("../../..")
-input_actions = Array[ExtResource("12_b2kln")]([SubResource("Resource_we0b7"), SubResource("Resource_mtric")])
+input_actions = Array[ExtResource("12_b2kln")]([SubResource("Resource_we0b7"), SubResource("Resource_mtric"), SubResource("Resource_roll"), SubResource("Resource_grenade"), SubResource("Resource_slot_1"), SubResource("Resource_slot_2"), SubResource("Resource_slot_3")])
 
 [node name="attack" type="Node" parent="StateMachine" index="1" unique_id=2060421400 node_paths=PackedStringArray("on_completion")]
 script = ExtResource("12_m3ydn")
@@ -567,16 +601,43 @@ on_exit = Dictionary[String, Variant]({
 
 [node name="enable_hitbox" type="Node" parent="StateMachine/attack" index="2" unique_id=2088863622 node_paths=PackedStringArray("node")]
 script = ExtResource("9_fvq3l")
-node = NodePath("../../../HitBox/CollisionShape2D")
+node = NodePath("../../..")
 on_enter = Dictionary[String, Variant]({
-"disabled": false
+"attack_hitbox_enabled": true
 })
 on_exit = Dictionary[String, Variant]({
-"disabled": true
+"attack_hitbox_enabled": false
 })
 metadata/_custom_type_script = "uid://di3e8lyqvjft4"
 
-[node name="hurt" type="Node" parent="StateMachine" index="2" unique_id=2130344876 node_paths=PackedStringArray("on_completion")]
+[node name="roll" type="Node" parent="StateMachine" index="2" unique_id=1100204582 node_paths=PackedStringArray("on_completion")]
+script = ExtResource("12_m3ydn")
+impulse_force = 620.0
+impulse_duration = 0.18
+on_completion = [NodePath("../move")]
+delay_completion = Vector2(0.18, 0.18)
+
+[node name="is_rolling" type="Node" parent="StateMachine/roll" index="0" unique_id=1936491011 node_paths=PackedStringArray("node")]
+script = ExtResource("9_fvq3l")
+node = NodePath("../../..")
+on_enter = Dictionary[String, Variant]({
+"is_rolling": true
+})
+on_exit = Dictionary[String, Variant]({
+"is_rolling": false
+})
+
+[node name="roll_invincible" type="Node" parent="StateMachine/roll" index="1" unique_id=884392102 node_paths=PackedStringArray("node")]
+script = ExtResource("9_fvq3l")
+node = NodePath("../../../HealthController")
+on_enter = Dictionary[String, Variant]({
+"immortal": true
+})
+on_exit = Dictionary[String, Variant]({
+"immortal": false
+})
+
+[node name="hurt" type="Node" parent="StateMachine" index="3" unique_id=2130344876 node_paths=PackedStringArray("on_completion")]
 script = ExtResource("12_m3ydn")
 impulse_force = -450.0
 on_completion = [NodePath("../move")]
@@ -605,7 +666,7 @@ method_params = [0.3]
 send_statemachine_params = false
 metadata/_custom_type_script = "uid://dd2m5xedjwd4m"
 
-[node name="fall" type="Node" parent="StateMachine" index="3" unique_id=483554438 node_paths=PackedStringArray("on_completion")]
+[node name="fall" type="Node" parent="StateMachine" index="4" unique_id=483554438 node_paths=PackedStringArray("on_completion")]
 script = ExtResource("8_bp05k")
 on_completion = [NodePath("../move")]
 delay_completion = Vector2(0.2, 0.2)
@@ -637,11 +698,11 @@ method_name = "return_to_safe_position"
 send_statemachine_params = false
 metadata/_custom_type_script = "uid://dd2m5xedjwd4m"
 
-[node name="auto" type="Node" parent="StateMachine" index="4" unique_id=420756305]
+[node name="auto" type="Node" parent="StateMachine" index="5" unique_id=420756305]
 script = ExtResource("8_bp05k")
 disable_entity = true
 
-[node name="death" type="Node" parent="StateMachine" index="5" unique_id=639759410]
+[node name="death" type="Node" parent="StateMachine" index="6" unique_id=639759410]
 script = ExtResource("8_bp05k")
 disable_entity = true
 

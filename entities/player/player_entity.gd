@@ -6,18 +6,52 @@ extends CharacterEntity
 @export_group("States")
 @export var on_transfer_start: State ## State to enable when player starts transfering.
 @export var on_transfer_end: State ## State to enable when player ends transfering.
+@export var on_roll: State
 
 var player_id: int = 1 ## A unique id that is assigned to the player on creation. Player 1 will have player_id = 1 and each additional player will have an incremental id, 2, 3, 4, and so on.
 var equipped = 0 ## The id of the weapon equipped by the player.
+var roll_cooldown := 0.45
+var grenade_cooldown := 0.75
+var roll_cooldown_timer: Timer
+var grenade_cooldown_timer: Timer
+
+const DEFAULT_WEAPON_LOADOUT: Array[DataWeapon] = [
+	preload("res://items/weapons/deagle.tres"),
+	preload("res://items/weapons/shotgun.tres"),
+	preload("res://items/weapons/ak.tres")
+]
+const GRENADE_SCENE: PackedScene = preload("res://items/weapons/grenade.tscn")
 
 func _ready():
 	super._ready()
+	_init_ability_timers()
 	Globals.transfer_start.connect(func(): 
 		on_transfer_start.enable()
 	)
 	Globals.transfer_complete.connect(func(): on_transfer_end.enable())
 	Globals.destination_found.connect(func(destination_path): _move_to_destination(destination_path))
 	receive_data(DataManager.get_player_data(player_id))
+	_ensure_default_loadout()
+
+func _init_ability_timers():
+	roll_cooldown_timer = Timer.new()
+	roll_cooldown_timer.one_shot = true
+	add_child(roll_cooldown_timer)
+	grenade_cooldown_timer = Timer.new()
+	grenade_cooldown_timer.one_shot = true
+	add_child(grenade_cooldown_timer)
+
+func _ensure_default_loadout():
+	if !inventory:
+		return
+	for loadout_weapon in DEFAULT_WEAPON_LOADOUT:
+		if inventory.is_item_in_inventory(loadout_weapon.resource_name) < 0:
+			inventory.add_item(loadout_weapon, 1)
+	if equipped >= 0 and equipped < DEFAULT_WEAPON_LOADOUT.size():
+		weapon = DEFAULT_WEAPON_LOADOUT[equipped]
+	elif weapon == null or weapon.resource_name == "sword":
+		equipped = 0
+		weapon = DEFAULT_WEAPON_LOADOUT[0]
 
 ##Get the player data to save.
 func get_data():
@@ -62,3 +96,32 @@ func disable_entity(value: bool, delay = 0.0):
 	await get_tree().create_timer(delay).timeout
 	stop()
 	input_enabled = !value
+
+func equip_loadout_slot(slot_index: int):
+	if slot_index < 0 or slot_index >= DEFAULT_WEAPON_LOADOUT.size():
+		return
+	equipped = slot_index
+	weapon = DEFAULT_WEAPON_LOADOUT[slot_index]
+
+func roll():
+	if !input_enabled or is_attacking or is_jumping or is_rolling or roll_cooldown_timer.time_left > 0:
+		return
+	roll_cooldown_timer.start(roll_cooldown)
+	enable_state(on_roll)
+
+func throw_grenade():
+	if !input_enabled or is_rolling or grenade_cooldown_timer.time_left > 0:
+		return
+	grenade_cooldown_timer.start(grenade_cooldown)
+	var grenade = GRENADE_SCENE.instantiate()
+	if grenade == null:
+		return
+	var spawn_parent: Node = get_tree().current_scene
+	if spawn_parent == null:
+		spawn_parent = get_tree().root
+	if spawn_parent == null:
+		return
+	spawn_parent.add_child(grenade)
+	grenade.global_position = global_position + (facing * 10.0)
+	if grenade.has_method("setup"):
+		grenade.call("setup", self, facing)

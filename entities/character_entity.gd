@@ -37,6 +37,14 @@ var friction_multiplier := 1.0
 
 var screen_notifier: VisibleOnScreenNotifier2D ## The instance of a VisibleOnScreenNotifier2D node, automatically created to handle the on_screen_entered and on_screen_exited states in the entity.
 var attack_cooldown_timer: Timer ## The timer that manages the cooldown time between attacks.
+var attack_hitbox_enabled := false:
+	set(value):
+		attack_hitbox_enabled = value
+		var attack_shape: CollisionShape2D = null
+		if hit_box:
+			attack_shape = hit_box.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if attack_shape:
+			attack_shape.disabled = !value or (weapon != null and !weapon.use_melee_hitbox)
 var facing := Vector2.DOWN: ## The direction the entity is facing.
 	set(value):
 		if value != facing and value != Vector2.ZERO:
@@ -66,6 +74,10 @@ var is_attacking: bool:
 	set(value):
 		is_attacking = value
 		_emit_action("attack", value)
+var is_rolling := false:
+	set(value):
+		is_rolling = value
+		_emit_action("roll", value)
 var is_charging := false ## Set to true when the entity is charging an attack.
 var is_hurting := false ## Set to true when the entity enters the on_hurt state, false when it leaves it.
 var is_blocked := false: ## True when blocks_detector is colliding.
@@ -114,6 +126,7 @@ func _set_weapon(_weapon: DataWeapon):
 		print_debug("%s equipped weapon: %s" % [name, weapon.resource_name])
 		if attack_cooldown_timer:
 			attack_cooldown_timer.stop()
+		attack_hitbox_enabled = false
 		hit_box.hp_change = -weapon.power
 
 func _init_attack_cooldown_timer():
@@ -166,9 +179,9 @@ func move_towards(_position):
 
 ## Handles entity movement, applying the right velocity to the body.
 func move(direction: Vector2):
-	if is_attacking:
+	if is_attacking or is_rolling:
 		return
-	var delta = get_process_delta_time()
+	var delta = get_physics_process_delta_time()
 	var target_velocity = Vector2.ZERO
 	var moving_direction := direction.normalized()
 	var new_friction = friction
@@ -202,9 +215,32 @@ func attack():
 	if !weapon or is_attacking or is_jumping or attack_cooldown_timer.time_left > 0:
 		return
 	else:
-		attack_cooldown_timer.start(weapon.speed)
+		attack_cooldown_timer.start(weapon.get_attack_cooldown())
+		if weapon.is_ranged():
+			_fire_projectiles()
 		if on_attack:
 			enable_state(on_attack)
+
+func _fire_projectiles():
+	var spawn_parent: Node = get_tree().current_scene
+	if spawn_parent == null:
+		spawn_parent = get_tree().root
+	if !weapon or !weapon.projectile_scene or spawn_parent == null:
+		return
+	var total_projectiles = maxi(weapon.pellet_count, 1)
+	var spread = weapon.spread_degrees
+	var start_angle = -spread * 0.5
+	var angle_step = 0.0 if total_projectiles <= 1 else spread / float(total_projectiles - 1)
+	for i in total_projectiles:
+		var projectile = weapon.projectile_scene.instantiate()
+		if projectile == null:
+			continue
+		var angle_offset = 0.0 if total_projectiles == 1 else start_angle + (angle_step * i)
+		var shot_direction = facing.rotated(deg_to_rad(angle_offset)).normalized()
+		spawn_parent.add_child(projectile)
+		projectile.global_position = global_position + (shot_direction * 14.0)
+		if projectile.has_method("setup"):
+			projectile.call("setup", self, weapon, shot_direction)
 
 ##Applies a flash to all children Sprite2D nodes found in group "flash" of the entity. 
 func flash(power := 0.0, duration := 0.15, color := Color.TRANSPARENT):
