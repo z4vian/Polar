@@ -1,24 +1,28 @@
 extends Node
 class_name EnemyAI
 
-enum FSMState { IDLE, CHASE, ATTACK, HURT, DEAD }
+enum FSMState { IDLE, PATROL, CHASE, ATTACK, HURT, DEAD }
 
 ## Distance at which the enemy notices and starts chasing the player.
 @export var aggro_range: float = 150.0
 ## Distance at which the enemy stops and attacks the player.
 @export var attack_range: float = 40.0
 ## HP removed from the player per attack hit.
-@export var attack_damage: int = 1
+@export var attack_damage: int = 3
 ## Seconds between each attack hit.
 @export var attack_interval: float = 1.5
+## Optional Path2D for patrolling. If unset, the enemy stays idle until aggroed.
+@export var patrol_path: Path2D
+## How close to a waypoint counts as "reached" before advancing to the next one.
+@export var patrol_point_threshold: float = 4.0
 
 var _entity: CharacterEntity
-var _nav_agent: NavigationAgent2D
 var _state: FSMState = FSMState.IDLE
 var _attack_timer: float = 0.0
 var _hurt_timer: float = 0.0
 var _prev_hp: int = 0
 var _player: CharacterEntity = null
+var _patrol_index: int = 0
 
 signal enemy_died
 
@@ -28,21 +32,26 @@ func _ready() -> void:
 		push_error("EnemyAI must be a direct child of CharacterEntity")
 		return
 
-	_nav_agent = NavigationAgent2D.new()
-	_nav_agent.name = "NavigationAgent2D"
-	_entity.add_child(_nav_agent)
+	# Fallback: if the entity scene didn't bind its health_controller export, find it by name.
+	if not _entity.health_controller:
+		_entity.health_controller = _entity.get_node_or_null("HealthController")
+	if _entity.health_controller:
+		_prev_hp = _entity.health_controller.max_hp
+		_entity.health_controller.hp_changed.connect(_on_hp_changed)
+	else:
+		push_warning("EnemyAI: %s has no HealthController; HP-driven states disabled." % _entity.name)
 
-	_prev_hp = _entity.health_controller.max_hp
-	_entity.health_controller.hp_changed.connect(_on_hp_changed)
+	if patrol_path and patrol_path.curve and patrol_path.curve.point_count > 0:
+		_state = FSMState.PATROL
 
-	call_deferred("_find_player")
+	_find_player()
 
 func _find_player() -> void:
-	var players := Globals.get_players()
-	if players.size() > 0:
-		_player = players[0]
-	else:
-		Globals.player_added_to_scene.connect(_on_player_added, CONNECT_ONE_SHOT)
+	for p in Globals.get_players():
+		if p is PlayerEntity:
+			_player = p
+			return
+	Globals.player_added_to_scene.connect(_on_player_added, CONNECT_ONE_SHOT)
 
 func _on_player_added(p: PlayerEntity) -> void:
 	_player = p
@@ -57,12 +66,11 @@ func _on_hp_changed(new_hp: int) -> void:
 	_prev_hp = new_hp
 
 func _physics_process(delta: float) -> void:
-	if not _player or not is_instance_valid(_player):
-		return
-
 	match _state:
 		FSMState.IDLE:
 			_tick_idle()
+		FSMState.PATROL:
+			_tick_patrol()
 		FSMState.CHASE:
 			_tick_chase()
 		FSMState.ATTACK:
@@ -77,22 +85,30 @@ func _tick_idle() -> void:
 	if _dist_to_player() <= aggro_range:
 		_set_state(FSMState.CHASE)
 
+func _tick_patrol() -> void:
+	if _dist_to_player() <= aggro_range:
+		_set_state(FSMState.CHASE)
+		return
+	if not patrol_path or not patrol_path.curve or patrol_path.curve.point_count == 0:
+		_set_state(FSMState.IDLE)
+		return
+	var curve := patrol_path.curve
+	var target: Vector2 = curve.get_point_position(_patrol_index) + patrol_path.global_position
+	if _entity.global_position.distance_to(target) <= patrol_point_threshold:
+		_patrol_index = (_patrol_index + 1) % curve.point_count
+	else:
+		_entity.move_towards(target)
+
 func _tick_chase() -> void:
 	var dist := _dist_to_player()
 	if dist > aggro_range:
-		_set_state(FSMState.IDLE)
+		_set_state(FSMState.PATROL if patrol_path else FSMState.IDLE)
 		return
 	if dist <= attack_range:
 		_set_state(FSMState.ATTACK)
 		return
-
-	_nav_agent.target_position = _player.global_position
-	var next_pos := _nav_agent.get_next_path_position()
-	# Falls back to direct movement if navigation mesh is not set up.
-	if next_pos != _entity.global_position:
-		_entity.move_towards(next_pos)
-	else:
-		_entity.move_towards(_player.global_position)
+	# Direct pursuit; CharacterBody2D.move_and_slide handles wall sliding.
+	_entity.move_towards(_player.global_position)
 
 func _tick_attack(delta: float) -> void:
 	var dist := _dist_to_player()
@@ -102,6 +118,10 @@ func _tick_attack(delta: float) -> void:
 		return
 	_entity.stop()
 	_entity.face_towards(_player.global_position)
+	# Keep the AnimationTree pinned to "attack" while in range.
+	# After the AT_END auto-transition to idle fires, this re-travels back to
+	# attack on the next frame, so the visual stays in attack pose.
+	_play_animation("attack")
 	_attack_timer -= delta
 	if _attack_timer <= 0.0:
 		_attack_timer = attack_interval
@@ -111,11 +131,14 @@ func _tick_hurt(delta: float) -> void:
 	_hurt_timer -= delta
 	_entity.move(Vector2.ZERO)
 	if _hurt_timer <= 0.0:
+		_entity.is_hurting = false
 		_set_state(FSMState.CHASE)
 
 func _enter_hurt() -> void:
 	_hurt_timer = 0.3
 	_state = FSMState.HURT
+	_entity.is_hurting = true
+	_play_animation("hurt")
 	var knockback_dir := _player.global_position.direction_to(_entity.global_position)
 	_entity.velocity += knockback_dir * 300.0
 	_entity.flash(1.0, 0.2)
@@ -123,6 +146,19 @@ func _enter_hurt() -> void:
 func _do_attack() -> void:
 	if _player and is_instance_valid(_player) and _player.health_controller:
 		_player.health_controller.change_hp(-attack_damage, _entity.name)
+	# Trigger the attack animation directly. The AnimationTree's AT_END transition
+	# will return to idle/walk/run on its own, so no flag toggling is needed.
+	_play_animation("attack")
+
+## Forces the AnimationTree's state machine into the given state by traveling
+## along its transition graph. No-op if we're already in that state.
+func _play_animation(state_name: String) -> void:
+	if not _entity or not _entity.animation_tree:
+		return
+	var playback = _entity.animation_tree.get("parameters/playback")
+	if not playback or playback.get_current_node() == state_name:
+		return
+	playback.travel(state_name)
 
 func _set_state(new_state: FSMState) -> void:
 	_state = new_state

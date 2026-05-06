@@ -19,6 +19,8 @@
 [ext_resource type="Script" uid="uid://b4jgftt0t4d1e" path="res://scripts/state_machine/states/state_impulse.gd" id="12_m3ydn"]
 [ext_resource type="Script" uid="uid://dd2m5xedjwd4m" path="res://scripts/state_machine/states/state_callable.gd" id="14_gx6sm"]
 [ext_resource type="PackedScene" uid="uid://05uhe60taf6a" path="res://components/inventory.tscn" id="15_gx6sm"]
+[ext_resource type="Script" uid="uid://ccekwhrf773wr" path="res://scripts/state_machine/states/state_instantiate.gd" id="19_eyb6c"]
+[ext_resource type="PackedScene" uid="uid://dbpfxxfvqgryi" path="res://scenes/menus/death_screen.tscn" id="20_221hk"]
 
 [sub_resource type="Resource" id="Resource_3wlsy"]
 script = ExtResource("3_yqrof")
@@ -28,7 +30,7 @@ metadata/_custom_type_script = "uid://qawe0cujhuns"
 [sub_resource type="CircleShape2D" id="CircleShape2D_1npff"]
 radius = 23.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_we0b7"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ghoj8"]
 resource_local_to_scene = true
 shader = ExtResource("4_8hp4k")
 shader_parameter/flash_color = Color(0.891291, 4.18738e-06, 8.66354e-07, 1)
@@ -226,7 +228,7 @@ region = Rect2(160, 150, 40, 50)
 atlas = ExtResource("6_afbqv")
 region = Rect2(200, 150, 40, 50)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_mtric"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_t1t22"]
 resource_local_to_scene = true
 animations = [{
 "frames": [{
@@ -493,7 +495,6 @@ on_transfer_start = NodePath("StateMachine/auto")
 on_transfer_end = NodePath("StateMachine/move")
 health_controller = NodePath("HealthController")
 inventory = NodePath("Inventory")
-weapon = ExtResource("3_3wlsy")
 initial_facing = SubResource("Resource_3wlsy")
 running_particles = NodePath("SmokeParticles")
 on_attack = NodePath("StateMachine/attack")
@@ -522,8 +523,8 @@ on_hp_0 = NodePath("../StateMachine/death")
 metadata/_custom_type_script = "uid://igey4j36or78"
 
 [node name="AnimatedSprite2D" parent="." index="5" unique_id=1449465034]
-material = SubResource("ShaderMaterial_we0b7")
-sprite_frames = SubResource("SpriteFrames_mtric")
+material = SubResource("ShaderMaterial_ghoj8")
+sprite_frames = SubResource("SpriteFrames_t1t22")
 
 [node name="AnimationTree" parent="." index="9" unique_id=2079922695]
 parameters/walk/BlendSpace2D/blend_position = Vector2(0.00376654, 0.992565)

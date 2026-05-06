@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://dayefv6yyr2we"]
 
 [ext_resource type="Script" uid="uid://cyncm32qdovi5" path="res://scripts/start_screen.gd" id="1_flm04"]
+[ext_resource type="FontFile" uid="uid://yqh2hv7leick" path="res://scenes/menus/Strong.ttf" id="2_njl8u"]
 
 [sub_resource type="Image" id="Image_76tfe"]
 data = {
@@ -1226,6 +1227,20 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
 text = "version"
+
+[node name="Label" type="Label" parent="." unique_id=1335667937]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 69.0
+offset_right = 487.0
+offset_bottom = 102.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/line_spacing = 0
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = ExtResource("2_njl8u")
+text = "Super cool dungeon crawler game"
 
 [connection signal="button_up" from="VBoxContainer/HBoxContainer/GridContainer/NewGame" to="." method="_on_new_game_button_up"]
 [connection signal="button_up" from="VBoxContainer/HBoxContainer/GridContainer/Continue" to="." method="_on_continue_button_up"]

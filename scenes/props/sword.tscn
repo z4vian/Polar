@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://b3yvqfeq38per"]
+
+[ext_resource type="PackedScene" uid="uid://cqw82ociq0p1m" path="res://scenes/props/item.tscn" id="1_item"]
+[ext_resource type="Script" uid="uid://b1smopidsigyw" path="res://items/content_item.gd" id="2_content"]
+[ext_resource type="Resource" uid="uid://bwwneuh3ges0r" path="res://items/weapons/sword_1.tres" id="3_sword"]
+
+[sub_resource type="Resource" id="Resource_swordcontent"]
+script = ExtResource("2_content")
+item = ExtResource("3_sword")
+quantity = 1
+metadata/_custom_type_script = ExtResource("2_content")
+
+[node name="Sword" instance=ExtResource("1_item")]
+contents = Array[ExtResource("2_content")]([SubResource("Resource_swordcontent")])
