@@ -44,37 +44,26 @@ position = Vector2(96, 240)
 position = Vector2(96, 80)
 destination_name = "Transfer_02"
 
-[node name="InteractionArea" parent="Transfers/Transfer_01" index="0"]
-metadata/_custom_type_script = "uid://bgm8n3pwwbymt"
-
-[node name="CollisionShape2D" parent="Transfers/Transfer_01/InteractionArea" index="0"]
+[node name="CollisionShape2D" parent="Transfers/Transfer_01/InteractionArea" parent_id_path=PackedInt32Array(828824901, 1389397417) index="0" unique_id=869880336]
 position = Vector2(70, 320)
 shape = SubResource("RectangleShape2D_l5irf")
 
-[node name="interact" parent="Transfers/Transfer_01/StateMachine" index="0"]
+[node name="interact" parent="Transfers/Transfer_01/StateMachine" parent_id_path=PackedInt32Array(828824901, 1042673827) index="0" unique_id=1189290650]
 conditions = Array[ExtResource("8_gackg")]([SubResource("Resource_i3j8m")])
-
-[node name="call_transfer" parent="Transfers/Transfer_01/StateMachine" index="1"]
-metadata/_custom_type_script = "uid://dd2m5xedjwd4m"
 
 [node name="Transfer_02" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="1" unique_id=720939903 instance=ExtResource("7_7kdxi")]
 position = Vector2(96, 400)
 destination_name = "Transfer_01"
 
-[node name="InteractionArea" parent="Transfers/Transfer_02" index="0"]
-metadata/_custom_type_script = "uid://bgm8n3pwwbymt"
-
-[node name="CollisionShape2D" parent="Transfers/Transfer_02/InteractionArea" index="0"]
+[node name="CollisionShape2D" parent="Transfers/Transfer_02/InteractionArea" parent_id_path=PackedInt32Array(720939903, 1389397417) index="0" unique_id=869880336]
 shape = SubResource("RectangleShape2D_lipfg")
 
-[node name="interact" parent="Transfers/Transfer_02/StateMachine" index="0"]
+[node name="interact" parent="Transfers/Transfer_02/StateMachine" parent_id_path=PackedInt32Array(720939903, 1042673827) index="0" unique_id=1189290650]
 conditions = Array[ExtResource("8_gackg")]([SubResource("Resource_phe5r")])
 
-[node name="call_transfer" parent="Transfers/Transfer_02/StateMachine" index="1"]
-metadata/_custom_type_script = "uid://dd2m5xedjwd4m"
-
-[node name="Transfer_East" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="2" unique_id=1921672941 instance=ExtResource("7_7kdxi")]
-position = Vector2(672, 240)
+[node name="Transfer_L2" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="2" unique_id=1921672941 instance=ExtResource("7_7kdxi")]
+position = Vector2(352.00003, -1888)
+scale = Vector2(0.6399951, 0.72)
 level_path = "uid://stlloemylyy0"
 destination_name = "Transfer_West"
 
