@@ -35,14 +35,14 @@ metadata/_edit_lock_ = true
 y_sort_enabled = true
 metadata/_edit_lock_ = true
 
+[node name="Transfers" type="Node2D" parent="." unique_id=1274957786]
+metadata/_edit_lock_ = true
+
 [node name="Entities" type="Node2D" parent="." unique_id=460895618]
 y_sort_enabled = true
 metadata/_edit_lock_ = true
 
 [node name="P1" parent="Entities" unique_id=584333298 instance=ExtResource("7_a3ws7")]
-
-[node name="Transfers" type="Node2D" parent="." unique_id=1274957786]
-metadata/_edit_lock_ = true
 
 [node name="Events" type="Node2D" parent="." unique_id=13798470]
 metadata/_edit_lock_ = true
