@@ -12,6 +12,7 @@ var _restart_button: Button
 var _quit_button: Button
 
 func _ready() -> void:
+	print("[DEATH] DeathScreen._ready running, parent=", get_parent())
 	# If we're not under a CanvasLayer, wrap ourselves in one so we render above the HUD.
 	if not _has_canvas_layer_ancestor():
 		_wrap_in_canvas_layer.call_deferred()
@@ -116,19 +117,22 @@ func _wrap_in_canvas_layer() -> void:
 
 func _on_restart_pressed() -> void:
 	print("[DEATH] Restart pressed")
-	var current_level := Globals.get_current_level()
+	var current_level = Globals.get_current_level()
 	get_tree().paused = false
-	if SaveFileManager.save_file_exists():
-		DataManager.load_file_data()
-		var level_to_load: String = DataManager.get_file_data().game_data.level
-		if level_to_load:
-			SceneManager.swap_scenes(level_to_load, get_tree().root, current_level, Const.TRANSITION.FADE_TO_BLACK)
-			_close()
-			return
-	# No save: reset and go to the configured fallback level (typically the start screen).
+	# Reload the current level from scratch: full HP, default positions, no
+	# carry-over enemy state. We deliberately do NOT load the save here -
+	# Restart on the death screen means "new run", not "respawn at bonfire".
 	DataManager.reset_file_data()
-	if not fallback_start_level.is_empty():
-		SceneManager.swap_scenes(fallback_start_level, get_tree().root, current_level, Const.TRANSITION.FADE_TO_BLACK)
+	var level_path := ""
+	if current_level:
+		level_path = current_level.scene_file_path
+	if level_path.is_empty() or not ResourceLoader.exists(level_path):
+		level_path = fallback_start_level
+	if level_path.is_empty():
+		printerr("[DEATH] No level to restart - set fallback_start_level on the DeathScreen node, or be inside a valid level when dying.")
+		_close()
+		return
+	SceneManager.swap_scenes(level_path, get_tree().root, current_level, Const.TRANSITION.FADE_TO_BLACK)
 	_close()
 
 func _on_quit_pressed() -> void:

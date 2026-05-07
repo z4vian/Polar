@@ -48,10 +48,11 @@ func _ready() -> void:
 
 func _find_player() -> void:
 	for p in Globals.get_players():
-		if p is PlayerEntity:
+		if p is PlayerEntity and is_instance_valid(p):
 			_player = p
 			return
-	Globals.player_added_to_scene.connect(_on_player_added, CONNECT_ONE_SHOT)
+	if not Globals.player_added_to_scene.is_connected(_on_player_added):
+		Globals.player_added_to_scene.connect(_on_player_added, CONNECT_ONE_SHOT)
 
 func _on_player_added(p: PlayerEntity) -> void:
 	_player = p
@@ -66,6 +67,10 @@ func _on_hp_changed(new_hp: int) -> void:
 	_prev_hp = new_hp
 
 func _physics_process(delta: float) -> void:
+	# If our cached player ref got freed (e.g. on a level restart that
+	# swaps the player out from under us), look for the new one.
+	if not _player or not is_instance_valid(_player):
+		_find_player()
 	match _state:
 		FSMState.IDLE:
 			_tick_idle()
@@ -118,10 +123,11 @@ func _tick_attack(delta: float) -> void:
 		return
 	_entity.stop()
 	_entity.face_towards(_player.global_position)
-	# Keep the AnimationTree pinned to "attack" while in range.
-	# After the AT_END auto-transition to idle fires, this re-travels back to
-	# attack on the next frame, so the visual stays in attack pose.
-	_play_animation("attack")
+	# Note: we deliberately do not call _play_animation("attack") here.
+	# The shared AnimationTree forces an AT_END exit from "attack" every
+	# animation cycle, which produces a visible flicker when re-entered.
+	# Leaving the entity in idle keeps the sprite stable; damage is still
+	# dealt on attack_interval below.
 	_attack_timer -= delta
 	if _attack_timer <= 0.0:
 		_attack_timer = attack_interval
