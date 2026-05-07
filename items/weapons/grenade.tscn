@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://ulp3wlfsy1he"]
 
-[ext_resource type="Script" path="res://items/weapons/grenade.gd" id="1_gren"]
+[ext_resource type="Script" uid="uid://bvmiy07v1w4r1" path="res://items/weapons/grenade.gd" id="1_gren"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_travel"]
 radius = 4.0
@@ -8,25 +8,28 @@ radius = 4.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_blast"]
 radius = 38.0
 
-[node name="Grenade" type="Area2D"]
-collision_layer = 64
+[node name="Grenade" type="Area2D" unique_id=670834410]
+collision_layer = 0
 collision_mask = 0
 monitoring = false
-monitorable = true
+monitorable = false
 script = ExtResource("1_gren")
 
-[node name="TravelShape" type="CollisionShape2D" parent="."]
+[node name="TravelShape" type="CollisionShape2D" parent="." unique_id=2028131608]
 shape = SubResource("CircleShape2D_travel")
 
-[node name="BlastShape" type="CollisionShape2D" parent="."]
+[node name="BlastShape" type="CollisionShape2D" parent="." unique_id=566195897]
 shape = SubResource("CircleShape2D_blast")
 disabled = true
 
-[node name="BodyVisual" type="Polygon2D" parent="."]
+[node name="BodyVisual" type="Polygon2D" parent="." unique_id=859826281]
 color = Color(0.462745, 0.647059, 0.215686, 1)
 polygon = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
 
-[node name="BlastVisual" type="Polygon2D" parent="."]
+[node name="BodySprite" type="Sprite2D" parent="." unique_id=2037119100]
+visible = false
+
+[node name="BlastVisual" type="Polygon2D" parent="." unique_id=1210632688]
 visible = false
 color = Color(1, 0.560784, 0.219608, 0.35)
 polygon = PackedVector2Array(-38, 0, -26.8701, -26.8701, 0, -38, 26.8701, -26.8701, 38, 0, 26.8701, 26.8701, 0, 38, -26.8701, 26.8701)

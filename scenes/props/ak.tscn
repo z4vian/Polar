@@ -1,0 +1,22 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" uid="uid://cqw82ociq0p1m" path="res://scenes/props/item.tscn" id="1_item"]
+[ext_resource type="Texture2D" uid="uid://7re2dbp0ltag" path="res://items/weapons/ak.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://b1smopidsigyw" path="res://items/content_item.gd" id="2_content"]
+[ext_resource type="Resource" path="res://items/weapons/ak.tres" id="3_weapon"]
+
+[sub_resource type="Resource" id="Resource_content"]
+script = ExtResource("2_content")
+item = ExtResource("3_weapon")
+quantity = 1
+metadata/_custom_type_script = ExtResource("2_content")
+
+[node name="AK" instance=ExtResource("1_item")]
+scale = Vector2(0.0761905, 0.0761905)
+texture = ExtResource("2_texture")
+region_enabled = false
+hframes = 1
+contents = Array[ExtResource("2_content")]([SubResource("Resource_content")])
+
+[node name="InteractionArea" parent="." index="0"]
+scale = Vector2(13.125, 13.125)

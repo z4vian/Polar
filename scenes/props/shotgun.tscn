@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://wnclgwtvso7c"]
+
+[ext_resource type="PackedScene" uid="uid://cqw82ociq0p1m" path="res://scenes/props/item.tscn" id="1_item"]
+[ext_resource type="Script" uid="uid://b1smopidsigyw" path="res://items/content_item.gd" id="2_content"]
+[ext_resource type="Texture2D" uid="uid://blat61wv7lj4g" path="res://items/weapons/shotgun.png" id="2_texture"]
+[ext_resource type="Resource" uid="uid://bmk8je3s8fm4u" path="res://items/weapons/shotgun.tres" id="3_weapon"]
+
+[sub_resource type="Resource" id="Resource_content"]
+script = ExtResource("2_content")
+item = ExtResource("3_weapon")
+quantity = 1
+metadata/_custom_type_script = ExtResource("2_content")
+
+[node name="Shotgun" unique_id=284669427 instance=ExtResource("1_item")]
+scale = Vector2(0.0761905, 0.0761905)
+texture = ExtResource("2_texture")
+hframes = 1
+region_enabled = false
+contents = Array[ExtResource("2_content")]([SubResource("Resource_content")])
+
+[node name="InteractionArea" parent="." index="0"]
+scale = Vector2(13.125, 13.125)
+metadata/_custom_type_script = "uid://bgm8n3pwwbymt"
+
+[node name="AnimationPlayer" parent="." index="1"]
+autoplay = &"idle"
+
+[node name="get_contents" parent="StateMachine" index="1"]
+metadata/_custom_type_script = "uid://dd2m5xedjwd4m"

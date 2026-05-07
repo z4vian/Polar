@@ -56,6 +56,7 @@ var update_facing_with_movement := true
 var speed := 0.0 ## The current speed of the entity.
 var invert_moving_direction := false ## Inverts the movement direction. Useful for moving an entity away from the target position.
 var safe_position := Vector2.ZERO ## The last position of the entity that was deemed safe. It is set before a jump and is eventually reassigned to the entity by calling the return_to_safe_position method.
+var _roll_collision_exceptions: Array[PhysicsBody2D] = []
 
 @export_group("Actions")
 var is_moving: bool: ## True if velocity is non-zero.
@@ -76,7 +77,10 @@ var is_attacking: bool:
 		_emit_action("attack", value)
 var is_rolling := false:
 	set(value):
+		if is_rolling == value:
+			return
 		is_rolling = value
+		_set_roll_enemy_collision_disabled(value)
 		_emit_action("roll", value)
 var is_charging := false ## Set to true when the entity is charging an attack.
 var is_hurting := false ## Set to true when the entity enters the on_hurt state, false when it leaves it.
@@ -250,7 +254,7 @@ func attack():
 		attack_cooldown_timer.start(weapon.get_attack_cooldown())
 		if weapon.is_ranged():
 			_fire_projectiles()
-		if on_attack:
+		if on_attack and weapon.use_attack_lunge:
 			enable_state(on_attack)
 
 func _fire_projectiles():
@@ -273,6 +277,23 @@ func _fire_projectiles():
 		projectile.global_position = global_position + (shot_direction * 14.0)
 		if projectile.has_method("setup"):
 			projectile.call("setup", self, weapon, shot_direction)
+
+func _set_roll_enemy_collision_disabled(disabled: bool) -> void:
+	if not (self is PlayerEntity):
+		return
+	if disabled:
+		for enemy in get_tree().get_nodes_in_group(Const.GROUP.ENEMY):
+			if enemy is PhysicsBody2D and enemy != self:
+				var enemy_body := enemy as PhysicsBody2D
+				add_collision_exception_with(enemy_body)
+				enemy_body.add_collision_exception_with(self)
+				_roll_collision_exceptions.append(enemy_body)
+		return
+	for enemy in _roll_collision_exceptions:
+		if is_instance_valid(enemy):
+			remove_collision_exception_with(enemy)
+			enemy.remove_collision_exception_with(self)
+	_roll_collision_exceptions.clear()
 
 ##Applies a flash to all children Sprite2D nodes found in group "flash" of the entity. 
 func flash(power := 0.0, duration := 0.15, color := Color.TRANSPARENT):

@@ -10,6 +10,7 @@ extends DataItem
 @export var pellet_count := 1
 @export_range(0.0, 45.0, 0.5) var spread_degrees := 0.0
 @export var use_melee_hitbox := true
+@export var use_attack_lunge := true
 
 func is_ranged() -> bool:
 	return projectile_scene != null

@@ -3,6 +3,7 @@ class_name Inventory
 extends CanvasLayer
 
 @export var action_trigger = "inventory"
+@export var icon_size := Vector2i(32, 32)
 
 @onready var item_list: ItemList = $MarginContainer/ItemList
 
@@ -13,6 +14,7 @@ signal equip_weapon(weapon: DataWeapon)
 
 func _ready() -> void:
 	visible = is_open
+	item_list.fixed_icon_size = icon_size
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(action_trigger):
@@ -72,6 +74,13 @@ func _update_item_list():
 		item_list.add_item(item_name, item.icon)
 
 func _on_item_list_item_activated(index: int) -> void:
+	var item = items[index].item
+	if item is DataWeapon:
+		equip_weapon.emit(item)
+
+func _on_item_list_item_clicked(index: int, _at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index != MOUSE_BUTTON_LEFT:
+		return
 	var item = items[index].item
 	if item is DataWeapon:
 		equip_weapon.emit(item)

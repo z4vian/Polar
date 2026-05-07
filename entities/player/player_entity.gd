@@ -12,23 +12,19 @@ const _DEATH_SCREEN_SCENE: PackedScene = preload("res://scenes/menus/death_scree
 const _DEATH_SCREEN_DELAY: float = 1.0
 
 var player_id: int = 1 ## A unique id that is assigned to the player on creation. Player 1 will have player_id = 1 and each additional player will have an incremental id, 2, 3, 4, and so on.
-var equipped = 0 ## The id of the weapon equipped by the player.
+var equipped = -1 ## The inventory weapon slot equipped by the player.
 var _death_screen_shown := false
 var roll_cooldown := 0.45
 var grenade_cooldown := 0.75
 var roll_cooldown_timer: Timer
 var grenade_cooldown_timer: Timer
 
-const DEFAULT_WEAPON_LOADOUT: Array[DataWeapon] = [
-	preload("res://items/weapons/deagle.tres"),
-	preload("res://items/weapons/shotgun.tres"),
-	preload("res://items/weapons/ak.tres")
-]
 const GRENADE_SCENE: PackedScene = preload("res://items/weapons/grenade.tscn")
 
 
 func _ready():
 	super._ready()
+	_init_ability_timers()
 	Globals.transfer_start.connect(func():
 
 		on_transfer_start.enable()
@@ -37,28 +33,19 @@ func _ready():
 	Globals.destination_found.connect(func(destination_path): _move_to_destination(destination_path))
 	if health_controller:
 		health_controller.hp_changed.connect(_on_hp_changed)
+	if inventory:
+		inventory.equip_weapon.connect(_on_weapon_equipped)
 	receive_data(DataManager.get_player_data(player_id))
-	_ensure_default_loadout()
 
 func _init_ability_timers():
-	roll_cooldown_timer = Timer.new()
-	roll_cooldown_timer.one_shot = true
-	add_child(roll_cooldown_timer)
-	grenade_cooldown_timer = Timer.new()
-	grenade_cooldown_timer.one_shot = true
-	add_child(grenade_cooldown_timer)
-
-func _ensure_default_loadout():
-	if !inventory:
-		return
-	for loadout_weapon in DEFAULT_WEAPON_LOADOUT:
-		if inventory.is_item_in_inventory(loadout_weapon.resource_name) < 0:
-			inventory.add_item(loadout_weapon, 1)
-	if equipped >= 0 and equipped < DEFAULT_WEAPON_LOADOUT.size():
-		weapon = DEFAULT_WEAPON_LOADOUT[equipped]
-	elif weapon == null or weapon.resource_name == "sword":
-		equipped = 0
-		weapon = DEFAULT_WEAPON_LOADOUT[0]
+	if !roll_cooldown_timer:
+		roll_cooldown_timer = Timer.new()
+		roll_cooldown_timer.one_shot = true
+		add_child(roll_cooldown_timer)
+	if !grenade_cooldown_timer:
+		grenade_cooldown_timer = Timer.new()
+		grenade_cooldown_timer.one_shot = true
+		add_child(grenade_cooldown_timer)
 
 func _on_hp_changed(new_hp: int) -> void:
 	if new_hp > 0 or _death_screen_shown:
@@ -101,6 +88,7 @@ func receive_data(data):
 		if inventory:
 			inventory.items = data.inventory
 		equipped = data.equipped
+		equip_loadout_slot(equipped)
 
 func _move_to_destination(destination_path: String):
 	if !destination_path:
@@ -122,10 +110,27 @@ func disable_entity(value: bool, delay = 0.0):
 	input_enabled = !value
 
 func equip_loadout_slot(slot_index: int):
-	if slot_index < 0 or slot_index >= DEFAULT_WEAPON_LOADOUT.size():
+	var weapon_indices := _get_inventory_weapon_indices()
+	if slot_index < 0 or slot_index >= weapon_indices.size():
 		return
 	equipped = slot_index
-	weapon = DEFAULT_WEAPON_LOADOUT[slot_index]
+	weapon = inventory.items[weapon_indices[slot_index]].item as DataWeapon
+
+func _on_weapon_equipped(equipped_weapon: DataWeapon) -> void:
+	var weapon_indices := _get_inventory_weapon_indices()
+	for i in weapon_indices.size():
+		if inventory.items[weapon_indices[i]].item == equipped_weapon:
+			equipped = i
+			return
+
+func _get_inventory_weapon_indices() -> Array[int]:
+	var weapon_indices: Array[int] = []
+	if !inventory:
+		return weapon_indices
+	for i in inventory.items.size():
+		if inventory.items[i].item is DataWeapon:
+			weapon_indices.append(i)
+	return weapon_indices
 
 func roll():
 	if !input_enabled or is_attacking or is_jumping or is_rolling or roll_cooldown_timer.time_left > 0:

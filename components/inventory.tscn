@@ -22,3 +22,6 @@ theme_override_constants/margin_bottom = 16
 layout_mode = 2
 max_columns = 10
 same_column_width = true
+
+[connection signal="item_clicked" from="MarginContainer/ItemList" to="." method="_on_item_list_item_clicked"]
+[connection signal="item_activated" from="MarginContainer/ItemList" to="." method="_on_item_list_item_activated"]
