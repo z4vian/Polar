@@ -10,12 +10,11 @@
 [ext_resource type="Texture2D" uid="uid://c5hnm0xyony21" path="res://items/weapons/swords.png" id="5_7kdxi"]
 [ext_resource type="Texture2D" uid="uid://hmqmbxhdyx6t" path="res://entities/enemies/enemy-1.png" id="5_vr6os"]
 [ext_resource type="PackedScene" uid="uid://bybfkbp6hi8r0" path="res://components/transfer.tscn" id="7_7kdxi"]
-[ext_resource type="Script" uid="uid://dgeu5dy2dlgxo" path="res://scripts/checks/check.gd" id="8_gackg"]
-[ext_resource type="Script" uid="uid://cwdbt1w4qmrrg" path="res://scripts/checks/check_direction.gd" id="9_4rue7"]
+[ext_resource type="Texture2D" uid="uid://b2hn6bjv0t2g4" path="res://scenes/props/lvl tele.png" id="11_64u8t"]
 [ext_resource type="PackedScene" uid="uid://sqqjx0j33xse" path="res://scenes/props/door.tscn" id="13_yy7xr"]
 [ext_resource type="PackedScene" uid="uid://dg314c7dkjyup" path="res://scenes/props/key.tscn" id="14_7kdxi"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_gackg"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yy7xr"]
 resource_local_to_scene = true
 shader = ExtResource("3_uimbu")
 shader_parameter/flash_color = Color(1, 1, 1, 1)
@@ -233,7 +232,7 @@ region = Rect2(40, 150, 40, 50)
 atlas = ExtResource("5_vr6os")
 region = Rect2(80, 150, 40, 50)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_4rue7"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_7kdxi"]
 resource_local_to_scene = true
 animations = [{
 "frames": [{
@@ -505,24 +504,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_stinr"]
-resource_local_to_scene = true
-size = Vector2(64, 32)
-
-[sub_resource type="Resource" id="Resource_i3j8m"]
-script = ExtResource("9_4rue7")
-direction = 8
-metadata/_custom_type_script = ExtResource("9_4rue7")
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tb7be"]
-resource_local_to_scene = true
-size = Vector2(64, 32)
-
-[sub_resource type="Resource" id="Resource_phe5r"]
-script = ExtResource("9_4rue7")
-direction = 1
-metadata/_custom_type_script = ExtResource("9_4rue7")
-
 [node name="Playground_01" unique_id=905785320 instance=ExtResource("1_f0jf1")]
 
 [node name="GameCamera2D" parent="." index="0" unique_id=500404489]
@@ -557,8 +538,8 @@ position = Vector2(96, 240)
 position = Vector2(-277, -54)
 
 [node name="AnimatedSprite2D" parent="Entities/Enemy1" index="2" unique_id=1449465034]
-material = SubResource("ShaderMaterial_gackg")
-sprite_frames = SubResource("SpriteFrames_4rue7")
+material = SubResource("ShaderMaterial_yy7xr")
+sprite_frames = SubResource("SpriteFrames_7kdxi")
 
 [node name="Enemy2" parent="Entities" parent_id_path=PackedInt32Array(460895618) index="2" unique_id=894258804 instance=ExtResource("2_lipfg")]
 position = Vector2(392, -104)
@@ -579,37 +560,21 @@ position = Vector2(-360, -512)
 position = Vector2(56, -832)
 
 [node name="Enemy8" parent="Entities" parent_id_path=PackedInt32Array(460895618) index="8" unique_id=534268935 instance=ExtResource("2_lipfg")]
-position = Vector2(352, -792)
+position = Vector2(897, -798)
 
 [node name="Enemy9" parent="Entities" parent_id_path=PackedInt32Array(460895618) index="9" unique_id=673086421 instance=ExtResource("2_lipfg")]
 position = Vector2(1024, -840)
 
-[node name="Transfer_01" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="0" unique_id=828824901 instance=ExtResource("7_7kdxi")]
-position = Vector2(101, 82)
-destination_name = "Transfer_02"
-
-[node name="CollisionShape2D" parent="Transfers/Transfer_01/InteractionArea" parent_id_path=PackedInt32Array(828824901, 1389397417) index="0" unique_id=869880336]
-position = Vector2(70, 320)
-shape = SubResource("RectangleShape2D_stinr")
-
-[node name="interact" parent="Transfers/Transfer_01/StateMachine" parent_id_path=PackedInt32Array(828824901, 1042673827) index="0" unique_id=1189290650]
-conditions = Array[ExtResource("8_gackg")]([SubResource("Resource_i3j8m")])
-
-[node name="Transfer_02" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="1" unique_id=720939903 instance=ExtResource("7_7kdxi")]
-position = Vector2(96, 400)
-destination_name = "Transfer_01"
-
-[node name="CollisionShape2D" parent="Transfers/Transfer_02/InteractionArea" parent_id_path=PackedInt32Array(720939903, 1389397417) index="0" unique_id=869880336]
-shape = SubResource("RectangleShape2D_tb7be")
-
-[node name="interact" parent="Transfers/Transfer_02/StateMachine" parent_id_path=PackedInt32Array(720939903, 1042673827) index="0" unique_id=1189290650]
-conditions = Array[ExtResource("8_gackg")]([SubResource("Resource_phe5r")])
-
-[node name="Transfer_L2" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="2" unique_id=1921672941 instance=ExtResource("7_7kdxi")]
+[node name="Transfer_L2" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="0" unique_id=1921672941 instance=ExtResource("7_7kdxi")]
 position = Vector2(352.00003, -1888)
 scale = Vector2(0.6399951, 0.72)
 level_path = "uid://stlloemylyy0"
 destination_name = "Transfer_West"
+
+[node name="Sprite2D" type="Sprite2D" parent="Transfers/Transfer_L2" index="2" unique_id=1886638806]
+position = Vector2(-4.4107437e-05, 0.85299635)
+scale = Vector2(1.1241814, 2.016358)
+texture = ExtResource("11_64u8t")
 
 [node name="Potion" parent="." index="6" unique_id=1030023206 instance=ExtResource("3_64u8t")]
 position = Vector2(352, -120)
@@ -634,5 +599,3 @@ position = Vector2(1208, -984)
 
 [editable path="Entities/P1"]
 [editable path="Entities/Enemy1"]
-[editable path="Transfers/Transfer_01"]
-[editable path="Transfers/Transfer_02"]
