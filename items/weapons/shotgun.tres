@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DataWeapon" format=3 uid="uid://bmk8je3s8fm4u"]
+
+[ext_resource type="Texture2D" uid="uid://blat61wv7lj4g" path="res://items/weapons/shotgun.png" id="1_sypww"]
+[ext_resource type="Script" uid="uid://bc7pmqpgxatnh" path="res://items/weapons/data_weapon.gd" id="1_weapon"]
+[ext_resource type="PackedScene" path="res://items/weapons/projectile.tscn" id="2_projectile"]
+
+[resource]
+resource_name = "shotgun"
+script = ExtResource("1_weapon")
+power = 2
+speed = 0.7
+projectile_scene = ExtResource("2_projectile")
+rate_of_fire = 1.5
+projectile_speed = 760.0
+projectile_range = 360.0
+pellet_count = 3
+spread_degrees = 14.0
+use_melee_hitbox = false
+use_attack_lunge = false
+icon = ExtResource("1_sypww")

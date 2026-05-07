@@ -17,7 +17,12 @@ func _ready() -> void:
 func _on_hitbox_entered(hitbox: HitBox):
 	if !hitbox or !health_controller:
 		return
-	health_controller.change_hp(hitbox.hp_change, hitbox.owner.name)
+	var source_name := hitbox.name
+	if hitbox.owner:
+		source_name = hitbox.owner.name
+	elif hitbox.get("damage_source_name") != null:
+		source_name = hitbox.damage_source_name
+	health_controller.change_hp(hitbox.hp_change, source_name)
 
 func _on_entity_action_performed(action: String) -> void:
 	process_mode = PROCESS_MODE_DISABLED if action == "jump" else PROCESS_MODE_INHERIT

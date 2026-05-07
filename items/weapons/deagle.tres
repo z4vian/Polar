@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="DataWeapon" format=3 uid="uid://cedj1vuarc6s"]
+
+[ext_resource type="Texture2D" uid="uid://ciloijg7ssnct" path="res://items/weapons/d944a4897c07127.png" id="1_bsxh3"]
+[ext_resource type="Script" uid="uid://bc7pmqpgxatnh" path="res://items/weapons/data_weapon.gd" id="1_weapon"]
+[ext_resource type="PackedScene" path="res://items/weapons/projectile.tscn" id="2_projectile"]
+
+[resource]
+resource_name = "deagle"
+script = ExtResource("1_weapon")
+power = 4
+speed = 0.45
+projectile_scene = ExtResource("2_projectile")
+rate_of_fire = 2.2
+projectile_speed = 900.0
+projectile_range = 560.0
+pellet_count = null
+spread_degrees = null
+use_melee_hitbox = false
+use_attack_lunge = false
+icon = ExtResource("1_bsxh3")
+hide_from_inventory = null

@@ -7,12 +7,22 @@
 [ext_resource type="Shader" uid="uid://blugt5j7e8tag" path="res://shaders/flash.gdshader" id="3_uimbu"]
 [ext_resource type="Texture2D" uid="uid://2us16ikdxggi" path="res://entities/player/chara-hero.png" id="4_f0jf1"]
 [ext_resource type="PackedScene" uid="uid://b3yvqfeq38per" path="res://scenes/props/sword.tscn" id="4_yy7xr"]
-[ext_resource type="Texture2D" uid="uid://c5hnm0xyony21" path="res://items/weapons/swords.png" id="5_7kdxi"]
 [ext_resource type="Texture2D" uid="uid://hmqmbxhdyx6t" path="res://entities/enemies/enemy-1.png" id="5_vr6os"]
 [ext_resource type="PackedScene" uid="uid://bybfkbp6hi8r0" path="res://components/transfer.tscn" id="7_7kdxi"]
 [ext_resource type="Texture2D" uid="uid://b2hn6bjv0t2g4" path="res://scenes/props/lvl tele.png" id="11_64u8t"]
 [ext_resource type="PackedScene" uid="uid://sqqjx0j33xse" path="res://scenes/props/door.tscn" id="13_yy7xr"]
 [ext_resource type="PackedScene" uid="uid://dg314c7dkjyup" path="res://scenes/props/key.tscn" id="14_7kdxi"]
+[ext_resource type="PackedScene" path="res://scenes/props/deagle.tscn" id="15_deagle"]
+[ext_resource type="PackedScene" uid="uid://wnclgwtvso7c" path="res://scenes/props/shotgun.tscn" id="16_shotgun"]
+[ext_resource type="Texture2D" uid="uid://lbirisqjsnxx" path="res://entities/enemies/boss.png" id="17_4rue7"]
+[ext_resource type="PackedScene" path="res://scenes/props/ak.tscn" id="17_ak"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ge447"]
+load_path = "res://.godot/imported/swords.png-9a34721c76f110b2a6f898235b34fe09.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eudqs"]
+atlas = SubResource("CompressedTexture2D_ge447")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yy7xr"]
 resource_local_to_scene = true
@@ -529,7 +539,25 @@ position = Vector2(1192, -144)
 
 [node name="Sword" parent="Props" parent_id_path=PackedInt32Array(1299717428) index="3" unique_id=571555018 instance=ExtResource("4_yy7xr")]
 position = Vector2(96, 80)
-texture = ExtResource("5_7kdxi")
+scale = Vector2(0.75, 0.75)
+texture = SubResource("AtlasTexture_eudqs")
+hframes = 1
+region_enabled = false
+
+[node name="Deagle" parent="Props" parent_id_path=PackedInt32Array(1299717428) index="4" unique_id=468130768 instance=ExtResource("15_deagle")]
+position = Vector2(-440, -423)
+scale = Vector2(0.039473683, 0.039473683)
+icon_display_size = Vector2(60, 60)
+
+[node name="Shotgun" parent="Props" parent_id_path=PackedInt32Array(1299717428) index="5" unique_id=231124806 instance=ExtResource("16_shotgun")]
+position = Vector2(767, -284)
+scale = Vector2(0.019736841, 0.019736841)
+icon_display_size = Vector2(60, 60)
+
+[node name="AK" parent="Props" parent_id_path=PackedInt32Array(1299717428) index="6" unique_id=1457072672 instance=ExtResource("17_ak")]
+position = Vector2(577, -127.999985)
+scale = Vector2(0.07619048, 0.07619048)
+icon_display_size = Vector2(60, 60)
 
 [node name="P1" parent="Entities" parent_id_path=PackedInt32Array(460895618) index="0" unique_id=584333298]
 position = Vector2(96, 240)
@@ -584,18 +612,54 @@ position = Vector2(352, -992)
 
 [node name="Key" parent="." index="8" unique_id=1786577124 instance=ExtResource("14_7kdxi")]
 position = Vector2(4.82253e-07, -848)
+scale = Vector2(0.6666667, 0.6666667)
+texture = SubResource("AtlasTexture_646gu")
+hframes = 1
+region_enabled = false
+icon_display_size = Vector2(50, 50)
 
 [node name="Door2" parent="." index="9" unique_id=1056460331 instance=ExtResource("13_yy7xr")]
-position = Vector2(352, -1232)
+position = Vector2(351, -1764)
 
 [node name="Key2" parent="." index="10" unique_id=83488464 instance=ExtResource("14_7kdxi")]
 position = Vector2(-264, -528)
+scale = Vector2(0.6666667, 0.6666667)
+texture = SubResource("AtlasTexture_646gu")
+hframes = 1
+region_enabled = false
+icon_display_size = Vector2(50, 50)
 
 [node name="Potion2" parent="." index="11" unique_id=1923995312 instance=ExtResource("3_64u8t")]
 position = Vector2(840, -992)
 
 [node name="Potion3" parent="." index="12" unique_id=1263751807 instance=ExtResource("3_64u8t")]
 position = Vector2(1208, -984)
+
+[node name="Boss" parent="." index="13" unique_id=1430385767 instance=ExtResource("2_lipfg")]
+position = Vector2(354, -1619)
+scale = Vector2(2, 2)
+
+[node name="AnimatedSprite2D" parent="Boss" index="2" unique_id=1449465034]
+material = SubResource("ShaderMaterial_stinr")
+sprite_frames = SubResource("SpriteFrames_tb7be")
+
+[node name="HealthController" parent="Boss" index="9" unique_id=1020105821]
+max_hp = 50
+recovery_time = 0.4
+
+[node name="EnemyAI" parent="Boss" index="11" unique_id=1073003761]
+aggro_range = 220.0
+attack_range = 64.0
+attack_interval = 1.2
+
+[node name="Enemy9" parent="." index="14" unique_id=93317235 instance=ExtResource("2_lipfg")]
+position = Vector2(948, -844)
+
+[node name="Enemy10" parent="." index="15" unique_id=1440865319 instance=ExtResource("2_lipfg")]
+position = Vector2(1179, -839)
+
+[node name="Enemy9" parent="Enemy10" index="13" unique_id=216849524 instance=ExtResource("2_lipfg")]
+position = Vector2(-342, -38)
 
 [editable path="Entities/P1"]
 [editable path="Entities/Enemy1"]

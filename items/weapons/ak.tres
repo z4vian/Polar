@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DataWeapon" format=3 uid="uid://bgy8a8ywtglae"]
+
+[ext_resource type="Texture2D" uid="uid://7re2dbp0ltag" path="res://items/weapons/ak.png" id="1_icon"]
+[ext_resource type="Script" uid="uid://bc7pmqpgxatnh" path="res://items/weapons/data_weapon.gd" id="1_weapon"]
+[ext_resource type="PackedScene" path="res://items/weapons/projectile.tscn" id="2_projectile"]
+
+[resource]
+resource_name = "ak"
+script = ExtResource("1_weapon")
+speed = 0.16
+projectile_scene = ExtResource("2_projectile")
+rate_of_fire = 8.0
+projectile_speed = 820.0
+projectile_range = 500.0
+spread_degrees = 4.0
+use_melee_hitbox = false
+use_attack_lunge = false
+icon = ExtResource("1_icon")

@@ -504,7 +504,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Enemy1" unique_id=300764904 instance=ExtResource("1_ftgfs")]
+[node name="Enemy1" unique_id=300764904 groups=["enemy"] instance=ExtResource("1_ftgfs")]
 weapon = SubResource("Resource_56i32")
 max_speed = 100.0
 friction = 1500.0
