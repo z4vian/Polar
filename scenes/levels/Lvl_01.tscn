@@ -1,27 +1,8 @@
 [gd_scene format=4 uid="uid://b70sj1xr15rx7"]
 
 [ext_resource type="PackedScene" uid="uid://b0b0jp36dubff" path="res://scenes/levels/Level.tscn" id="1_f0jf1"]
+[ext_resource type="Texture2D" uid="uid://b2hn6bjv0t2g4" path="res://scenes/props/lvl tele.png" id="5_lipfg"]
 [ext_resource type="PackedScene" uid="uid://bybfkbp6hi8r0" path="res://components/transfer.tscn" id="7_7kdxi"]
-[ext_resource type="Script" uid="uid://dgeu5dy2dlgxo" path="res://scripts/checks/check.gd" id="8_gackg"]
-[ext_resource type="Script" uid="uid://cwdbt1w4qmrrg" path="res://scripts/checks/check_direction.gd" id="9_4rue7"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_l5irf"]
-resource_local_to_scene = true
-size = Vector2(64, 32)
-
-[sub_resource type="Resource" id="Resource_i3j8m"]
-script = ExtResource("9_4rue7")
-direction = 8
-metadata/_custom_type_script = ExtResource("9_4rue7")
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lipfg"]
-resource_local_to_scene = true
-size = Vector2(64, 32)
-
-[sub_resource type="Resource" id="Resource_phe5r"]
-script = ExtResource("9_4rue7")
-direction = 1
-metadata/_custom_type_script = ExtResource("9_4rue7")
 
 [node name="Playground_01" unique_id=905785320 instance=ExtResource("1_f0jf1")]
 
@@ -40,32 +21,14 @@ tile_map_data = PackedByteArray("AAACAAgAAgABAAIAAAADAAgAAgABAAIAAAAEAAgAAgACAAI
 [node name="P1" parent="Entities" parent_id_path=PackedInt32Array(460895618) index="0" unique_id=584333298]
 position = Vector2(96, 240)
 
-[node name="Transfer_01" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="0" unique_id=828824901 instance=ExtResource("7_7kdxi")]
-position = Vector2(96, 80)
-destination_name = "Transfer_02"
-
-[node name="CollisionShape2D" parent="Transfers/Transfer_01/InteractionArea" parent_id_path=PackedInt32Array(828824901, 1389397417) index="0" unique_id=869880336]
-position = Vector2(70, 320)
-shape = SubResource("RectangleShape2D_l5irf")
-
-[node name="interact" parent="Transfers/Transfer_01/StateMachine" parent_id_path=PackedInt32Array(828824901, 1042673827) index="0" unique_id=1189290650]
-conditions = Array[ExtResource("8_gackg")]([SubResource("Resource_i3j8m")])
-
-[node name="Transfer_02" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="1" unique_id=720939903 instance=ExtResource("7_7kdxi")]
-position = Vector2(96, 400)
-destination_name = "Transfer_01"
-
-[node name="CollisionShape2D" parent="Transfers/Transfer_02/InteractionArea" parent_id_path=PackedInt32Array(720939903, 1389397417) index="0" unique_id=869880336]
-shape = SubResource("RectangleShape2D_lipfg")
-
-[node name="interact" parent="Transfers/Transfer_02/StateMachine" parent_id_path=PackedInt32Array(720939903, 1042673827) index="0" unique_id=1189290650]
-conditions = Array[ExtResource("8_gackg")]([SubResource("Resource_phe5r")])
-
-[node name="Transfer_L2" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="2" unique_id=1921672941 instance=ExtResource("7_7kdxi")]
+[node name="Transfer_L2" parent="Transfers" parent_id_path=PackedInt32Array(1274957786) index="0" unique_id=1921672941 instance=ExtResource("7_7kdxi")]
 position = Vector2(352.00003, -1888)
-scale = Vector2(0.6399951, 0.72)
+scale = Vector2(0.6399951, 0.2400001)
 level_path = "uid://stlloemylyy0"
 destination_name = "Transfer_West"
 
-[editable path="Transfers/Transfer_01"]
-[editable path="Transfers/Transfer_02"]
+[node name="Sprite2D" type="Sprite2D" parent="Transfers/Transfer_L2" index="2" unique_id=1328867513]
+scale = Vector2(1, 4.9824166)
+texture = ExtResource("5_lipfg")
+
+[node name="Node2D" type="Node2D" parent="." index="6" unique_id=1358875983]
