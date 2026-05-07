@@ -92,6 +92,8 @@ signal hit
 signal direction_changed(direction: Vector2)
 signal action_performed(action: String)
 
+var _hp_for_particles: int = 0
+
 func _ready():
 	_init_screen_notifier()
 	_init_attack_cooldown_timer()
@@ -101,6 +103,36 @@ func _ready():
 	weapon = weapon ## Initialize the weapon.
 	if initial_facing:
 		facing = initial_facing.to_vector
+	if health_controller:
+		_hp_for_particles = health_controller.hp
+		health_controller.hp_changed.connect(_on_hp_changed_for_particles)
+
+func _on_hp_changed_for_particles(new_hp: int) -> void:
+	if new_hp < _hp_for_particles:
+		_spawn_hit_particles()
+	_hp_for_particles = new_hp
+
+func _spawn_hit_particles() -> void:
+	var p := CPUParticles2D.new()
+	p.amount = 14
+	p.lifetime = 0.45
+	p.one_shot = true
+	p.explosiveness = 1.0
+	p.local_coords = false
+	p.color = Color(0.9, 0.1, 0.15, 1.0)
+	p.direction = Vector2(0, -1)
+	p.spread = 80.0
+	p.initial_velocity_min = 70.0
+	p.initial_velocity_max = 140.0
+	p.gravity = Vector2(0, 240.0)
+	p.scale_amount_min = 1.5
+	p.scale_amount_max = 3.0
+	p.position = Vector2(0, -8)
+	add_child(p)
+	p.emitting = true
+	await get_tree().create_timer(p.lifetime + 0.1).timeout
+	if is_instance_valid(p):
+		p.queue_free()
 
 func _process(_delta):
 	_update_animation()

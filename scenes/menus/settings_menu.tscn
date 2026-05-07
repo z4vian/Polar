@@ -106,15 +106,16 @@ max_value = 1.0
 step = 0.05
 value = 1.0
 
-[node name="Language" type="Label" parent="Panel/BackgroundPanel/MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=8851199]
-custom_minimum_size = Vector2(175, 0)
-layout_mode = 2
-text = "Language
-"
 
-[node name="LanguageDropdown" type="OptionButton" parent="Panel/BackgroundPanel/MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=1221140461]
+[node name="KeyBindsRow" type="HBoxContainer" parent="Panel/BackgroundPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="KeyBindsButton" type="Button" parent="Panel/BackgroundPanel/MarginContainer/VBoxContainer/KeyBindsRow"]
 unique_name_in_owner = true
 layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Key Binds"
 
 [node name="Panel" type="Panel" parent="Panel/BackgroundPanel/MarginContainer/VBoxContainer" unique_id=332866723]
 custom_minimum_size = Vector2(2.08165e-12, 25)
@@ -133,7 +134,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 8
 text = "Close"
 
+[connection signal="pressed" from="Panel/BackgroundPanel/MarginContainer/VBoxContainer/KeyBindsRow/KeyBindsButton" to="." method="_on_key_binds_button_pressed"]
 [connection signal="value_changed" from="Panel/BackgroundPanel/MarginContainer/VBoxContainer/MarginContainer/GridContainer/MusicSlider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="Panel/BackgroundPanel/MarginContainer/VBoxContainer/MarginContainer/GridContainer/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
-[connection signal="item_selected" from="Panel/BackgroundPanel/MarginContainer/VBoxContainer/MarginContainer/GridContainer/LanguageDropdown" to="." method="_on_language_dropdown_item_selected"]
 [connection signal="pressed" from="Panel/BackgroundPanel/MarginContainer/VBoxContainer/HBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

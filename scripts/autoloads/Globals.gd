@@ -7,6 +7,8 @@ var user_prefs: UserPrefs
 
 var settings_menu_scene: PackedScene = preload("res://scenes/menus/settings_menu.tscn")
 var settings_menu = null
+var _pause_menu: CanvasLayer = null
+const _PAUSE_MENU_SCRIPT = preload("res://scripts/pause_menu.gd")
 
 @warning_ignore("unused_signal")
 signal transfer_start
@@ -21,10 +23,23 @@ signal destination_found(destination_path: String)
 
 func _ready():
 	user_prefs = UserPrefs.load_or_create()
+	user_prefs.apply_keybinds()
 	AudioServer.set_bus_volume_db(SFX_BUS_ID, linear_to_db(user_prefs.sfx_volume))
 	AudioServer.set_bus_mute(SFX_BUS_ID, user_prefs.sfx_volume < .05)
 	AudioServer.set_bus_volume_db(MUSIC_BUS_ID, linear_to_db(user_prefs.music_volume))
 	AudioServer.set_bus_mute(MUSIC_BUS_ID, user_prefs.music_volume < .05)
+
+func _process(_delta: float) -> void:
+	if not Input.is_action_just_pressed("ui_cancel"):
+		return
+	if get_tree().paused:
+		return
+	if _pause_menu != null and is_instance_valid(_pause_menu):
+		return
+	if get_current_level() == null:
+		return
+	_pause_menu = _PAUSE_MENU_SCRIPT.new()
+	get_tree().root.add_child(_pause_menu)
 
 func get_selected_language() -> String:
 	var s: String = user_prefs.language

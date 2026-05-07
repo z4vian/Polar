@@ -23,7 +23,6 @@ config/version="1.9.1"
 config/tags=PackedStringArray("template")
 run/main_scene="res://scenes/menus/start_screen.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="uid://cvnvko43mnhfy"
 
 [autoload]
 
@@ -190,7 +189,7 @@ inventory={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://local/translations.en.translation", "res://local/translations.it.translation")
+locale/translations=PackedStringArray("res://local/translations.en.translation")
 locale/translations_pot_files=PackedStringArray("res://dialogues/start.dialogue", "res://dialogues/commons.dialogue")
 
 [layer_names]

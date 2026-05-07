@@ -49,6 +49,10 @@ func add_item(item: DataItem, quantity: int):
 		content.quantity = quantity
 		items.append(content)
 		print("%s added to %s's inventory! q: %s" % [item.resource_name, self.name, quantity])
+	# Auto-equip weapons on pickup so the entity's hitbox damage is updated
+	# without requiring the player to open the inventory and double-click.
+	if item is DataWeapon:
+		equip_weapon.emit(item)
 
 ##Removes an item from the inventory, if the item already exists in inventory.
 func remove_item(item_name: String, quantity: int):

@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Zavian\\\\Desktop\\\\CODING CLASSES\\\\370\\\\game\\\\Polar\" -Recurse -File)",
+      "Bash(Select-Object FullName)",
+      "Bash(ConvertTo-Csv -NoTypeInformation)",
+      "Bash(Out-String)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\Zavian\\\\Desktop\\\\CODING CLASSES\\\\370\\\\game\\\\Polar\" -Recurse -File | ForEach-Object { $_.FullName })",
+      "Bash(awk 'NR>=525 && NR<=570' \"c:/Users/Zavian/Desktop/CODING CLASSES/370/Polar/scenes/levels/Lvl_01.tscn\")",
+      "Bash(git show *)",
+      "Read(//tmp/**)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"$PWD\\\\entities\\\\player\\\\chara-hero.png\"\\); \"Width: $\\($img.Width\\), Height: $\\($img.Height\\)\"; $img.Dispose\\(\\))",
+      "Bash(python3 -c \"from PIL import Image; img = Image.open\\('/tmp/orig.png'\\); print\\(f'Width: {img.width}, Height: {img.height}'\\)\")",
+      "Bash(git checkout *)",
+      "Bash(awk 'NR>=2281 && NR<=2310' \"scenes/menus/death_screen.tscn\")",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"$PWD\\\\entities\\\\enemies\\\\boss.png\"\\); \"boss.png: $\\($img.Width\\)x$\\($img.Height\\)\"; $img.Dispose\\(\\); $img2 = [System.Drawing.Image]::FromFile\\(\"$PWD\\\\entities\\\\enemies\\\\enemy-1.png\"\\); \"enemy-1.png: $\\($img2.Width\\)x$\\($img2.Height\\)\"; $img2.Dispose\\(\\))",
+      "Bash(awk 'NR>=1020 && NR<=1060' \"scenes/levels/Lvl_02.tscn\")",
+      "Bash(awk 'NR>=110 && NR<=240' \"scenes/levels/Lvl_02.tscn\")",
+      "Bash(awk 'NR>=229 && NR<=720' \"scenes/levels/Lvl_02.tscn\")",
+      "Bash(awk 'NR>=229 && NR<=475' \"scenes/levels/Lvl_02.tscn\")",
+      "Bash(awk '/\\\\[sub_resource type=\"SpriteFrames\" id=\"SpriteFrames_xexeq\"/,/^$/' \"scenes/levels/Lvl_02.tscn\")",
+      "Bash(awk '/\\\\[sub_resource type=\"SpriteFrames\" id=\"SpriteFrames_g3w3b\"/,/^$/' \"scenes/levels/Lvl_02.tscn\")"
+    ]
+  }
+}

@@ -19,11 +19,24 @@ func _ready() -> void:
 	quit_button.visible = OS.get_name() != "Web"
 
 func _check_continue():
-	if SaveFileManager.save_file_exists():
-		continue_button.visible = true
+	# Continue button is always visible; greyed out (disabled) when there's no
+	# usable save. A "usable" save is one whose recorded level still exists on disk.
+	continue_button.visible = true
+	if _has_usable_save():
+		continue_button.disabled = false
 		continue_button.grab_focus()
 	else:
+		continue_button.disabled = true
 		newgame_button.grab_focus()
+
+func _has_usable_save() -> bool:
+	if not SaveFileManager.save_file_exists():
+		return false
+	var save = SaveFileManager.load_save_file()
+	if not save or not save.game_data:
+		return false
+	var level_path: String = save.game_data.level
+	return not level_path.is_empty() and ResourceLoader.exists(level_path)
 
 func _on_new_game_button_up() -> void:
 	DataManager.reset_file_data()
@@ -31,7 +44,12 @@ func _on_new_game_button_up() -> void:
 
 func _on_continue_button_up() -> void:
 	DataManager.load_file_data()
-	var level_to_load = DataManager.get_file_data().game_data.level
+	var level_to_load: String = DataManager.get_file_data().game_data.level
+	if level_to_load.is_empty() or not ResourceLoader.exists(level_to_load):
+		# Stale save pointing at a level that no longer exists. Reset and start fresh.
+		push_warning("Save file points to invalid level '%s'; starting a new game." % level_to_load)
+		DataManager.reset_file_data()
+		level_to_load = start_level
 	SceneManager.swap_scenes(level_to_load, get_tree().root, self, Const.TRANSITION.FADE_TO_WHITE)
 
 func _on_settings_button_up() -> void:

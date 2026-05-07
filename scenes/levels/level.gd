@@ -23,9 +23,9 @@ func get_data():
 
 ##internal - Used by SceneManager to get data from the outgoing level.
 func receive_data(data):
-	if data.destination_name:
+	if data.get("destination_name"):
 		destination_name = data.destination_name
-	if data.player_id:
+	if data.get("player_id"):
 		player_id = data.player_id
 
 func clear_tilemap_layers():
